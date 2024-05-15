@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+{% import 'svg.html.twig' as svg %}
+{% block title %}Nutriwave - Página Principal
+{% endblock %}
+
+{% block body %}
+	<header>
+		{{ include('nav.html.twig') }}
+		<link href="{{ asset('css/styles.css') }}" rel="stylesheet" type="text/css"/>
+	</header>
+	<div
+		class="container">
+		<!--  Paleta de colores #D28E8D #DE9535 #DE5A35 #DE7735 #DE3C35-->
+		<div class="row">
+			<div class="col-md-6">
+				<h1>Come sano toda la semana.</h1>
+				<p>Descubre nuestras deliciosas comidas saludables, elaboradas con ingredientes frescos y nutritivos.</p>
+				<p>
+					{{ svg.checkmark() }}Sin suscripciones, sin compromiso.
+				</p>
+				<p>
+					{{ svg.checkmark() }}Tu comida de la semana en una entrega.
+				</p>
+				<p>
+					{{ svg.checkmark() }}Sin cocinar, sin limpiar… ¡Listo en minutos!
+				</p>
+				<button type="button" class="btn btn-warning btn-primary btn-lg">
+					HAZ TU PEDIDO YA!
+				</button>
+			</div>
+			<div class="col-md-6">
+				<img src="{{ asset('images/comida.jpg') }}" class="img-fluid" alt="Imagen de comida saludable">
+			</div>
+		</div>
+	</div>
+{% endblock %}

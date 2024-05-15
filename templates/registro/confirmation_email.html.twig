@@ -1,0 +1,20 @@
+{# templates/registro/confirmation_email.html.twig #}
+
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8">
+		<title>Verifica tu correo electrónico</title>
+		<style>/* Agrega aquí tus estilos CSS */</style>
+</head>
+<body>
+	<p>Hola
+		{{ usuario.nombre }}!</p>
+	<p>Gracias por registrarte en nuestra aplicación. Por favor, confirma tu correo electrónico haciendo clic en el siguiente enlace:</p>
+	<p>
+		<a href="{{ signedUrl }}">Confirmar correo electrónico</a>
+	</p>
+	<p>Este enlace expirará en
+		{{ expiresAt|date('F jS, Y H:i') }}.</p>
+	<p>Si no te has registrado en nuestra aplicación, por favor ignora este mensaje.</p>
+</body></html>

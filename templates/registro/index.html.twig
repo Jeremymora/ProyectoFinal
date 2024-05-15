@@ -1,0 +1,24 @@
+{# templates/registro/index.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Registro
+{% endblock %}
+
+{% block body %}
+	<h1>Registrarse</h1>
+	{% for message in app.flashes('danger') %}
+		<div class="alert alert-danger">
+			{{ message }}
+		</div>
+	{% endfor %}
+
+	{{ form_start(form) }}
+	{{ form_row(form.nombreDeUsuario) }}
+	{{ form_row(form.email) }}
+	{{ form_row(form.confirmarEmail) }}
+	{{ form_row(form.contrasenia.first) }}
+	{{ form_row(form.contrasenia.second) }}
+	{{ form_row(form.submit) }}
+	{{ form_end(form) }}
+{% endblock %}
