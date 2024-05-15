@@ -35,7 +35,7 @@ class Usuario implements PasswordAuthenticatedUserInterface
     private $detallesPedido;
 
     #[ORM\Column(type:'boolean')]
-    private ?bool $IsVerified = false;
+    private $isVerified = false;
 
     public function getId(): ?int
     {
@@ -97,13 +97,17 @@ class Usuario implements PasswordAuthenticatedUserInterface
     }
     public function getIsVerified(): ?bool
     {
-        return $this->IsVerified;
+        return $this->isVerified;
     }
 
-    public function setIsVerified(bool $IsVerified): self
+    public function setIsVerified(bool $isVerified): self
     {
-        $this->IsVerified = $IsVerified;
+        $this->isVerified = $isVerified;
 
         return $this;
+    }
+    public function IsVerified(): ?bool
+    {
+        return $this->isVerified;
     }
 }

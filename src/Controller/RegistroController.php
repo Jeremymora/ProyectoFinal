@@ -52,7 +52,7 @@ class RegistroController extends AbstractController
 
             // Crea el correo electrónico de verificación
             $email = (new TemplatedEmail())
-                ->from(new Address('noreply@tuapp.com', 'Tu App'))
+                ->from(new Address('k3vin.m.ramirez@gmail.com', 'Tu App'))
                 ->to($usuario->getEmail())
                 ->subject('Por favor confirma tu correo electrónico')
                 ->htmlTemplate('registro/confirmation_email.html.twig')
