@@ -43,28 +43,31 @@ class RegistroController extends AbstractController
                 $usuario,
                 $form->get('contrasenia')->getData()
             ));
-            // Genera la firma del correo electrónico de verificación
+
+            $entityManager->persist($usuario);
+            $entityManager->flush();
             $signatureComponents = $this->verifyEmailHelper->generateSignature(
-                'app_verify_email', // Ruta que manejará la verificación del correo electrónico
+                'app_verify_email',
                 $usuario->getId(),
                 $usuario->getEmail()
             );
 
-            // Crea el correo electrónico de verificación
             $email = (new TemplatedEmail())
-                ->from(new Address('k3vin.m.ramirez@gmail.com', 'Tu App'))
-                ->to($usuario->getEmail())
+                ->from(new Address('k3vin.m.ramirez@gmail.com'))
+                ->to(new Address($usuario->getEmail()))
                 ->subject('Por favor confirma tu correo electrónico')
                 ->htmlTemplate('registro/confirmation_email.html.twig')
                 ->context([
                     'signedUrl' => $signatureComponents->getSignedUrl(),
-                    'expiresAt' => $signatureComponents->getExpiresAt(),
                     'usuario' => $usuario,
                 ]);
 
-            $this->mailer->send($email);
-            $entityManager->persist($usuario);
-            $entityManager->flush();
+            try {
+                // Envío del correo electrónico
+                $this->mailer->send($email);
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Error al enviar el correo electrónico: ' . $e->getMessage());
+            }
             return $this->redirectToRoute('app_home');
         }
         return $this->render('registro/index.html.twig', [
