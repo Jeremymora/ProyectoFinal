@@ -4,10 +4,11 @@ namespace App\Entity;
 
 use App\Repository\UsuarioRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UsuarioRepository::class)]
-class Usuario implements PasswordAuthenticatedUserInterface
+class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -82,9 +83,8 @@ class Usuario implements PasswordAuthenticatedUserInterface
         // Devuelve los roles que tiene este usuario. Por ahora, solo devolveremos 'ROLE_USER'.
         return ['ROLE_USER'];
     }
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
-        // Este método se puede dejar vacío, a menos que tengas datos sensibles que quieras borrar/limpiar.
     }
 
     public function getPassword(): string
@@ -93,7 +93,7 @@ class Usuario implements PasswordAuthenticatedUserInterface
     }
     public function getUserIdentifier(): string
     {
-        return "";
+        return $this->email;
     }
     public function getIsVerified(): ?bool
     {

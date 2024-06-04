@@ -2,12 +2,7 @@
 {% import 'svg.html.twig' as svg %}
 {% block title %}Nutriwave - Página Principal
 {% endblock %}
-
-{% block body %}
-	<header>
-		{{ include('nav.html.twig') }}
-		<link href="{{ asset('css/styles.css') }}" rel="stylesheet" type="text/css"/>
-	</header>
+{% block content %}
 	<div
 		class="container">
 		<!--  Paleta de colores #D28E8D #DE9535 #DE5A35 #DE7735 #DE3C35-->
@@ -24,9 +19,9 @@
 				<p>
 					{{ svg.checkmark() }}Sin cocinar, sin limpiar… ¡Listo en minutos!
 				</p>
-				<button type="button" class="btn btn-warning btn-primary btn-lg">
-					HAZ TU PEDIDO YA!
-				</button>
+				<a href="{{ path('carta_list') }}" class="btn btn-primary">HAZ TU PEDIDO YA!</a>
+
+
 			</div>
 			<div class="col-md-6">
 				<img src="{{ asset('images/comida.jpg') }}" class="img-fluid" alt="Imagen de comida saludable">

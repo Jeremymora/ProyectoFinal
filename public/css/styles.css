@@ -22,3 +22,50 @@
   background-color: #d28e8d;
   color: white;
 }
+.login-container {
+  background-color: #e8896f;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  margin: 50px auto;
+}
+
+button[type="submit"] {
+  background-color: #d97b6c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #bf6b5a;
+}
+
+label,
+input {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+input {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+a {
+  color: #bf6b5a;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+.product-grid {
+  display: grid;
+  justify-content: center;
+}

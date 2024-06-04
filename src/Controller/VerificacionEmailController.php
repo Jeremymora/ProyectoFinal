@@ -22,34 +22,24 @@ class VerificacionEmailController extends AbstractController
         $this->verifyEmailHelper = $verifyEmailHelper;
     }
 
-    #[Route('/verificar/email', name: 'app_verify_email')]
+    #[Route('/verificar/email/{id}', name: 'app_verify_email')]
     public function verifyUserEmail(Request $request, EntityManagerInterface $entityManager): Response
     {
         $id = $request->get('id');
-
         if (null === $id) {
-            // Redirige al usuario a la página de registro si no hay id en la URL
             return $this->redirectToRoute('app_registro');
-        }
-
-        $usuario = $entityManager->getRepository(Usuario::class)->find($id);
+        }$usuario = $entityManager->getRepository(Usuario::class)->find($id);
         if (null === $usuario) {
-            // Redirige al usuario a la página de registro si el usuario no existe
             return $this->redirectToRoute('app_registro');
-        }
-        // Valida la firma del correo electrónico y marca el usuario como verificado
-        try {
+        } try {
             $this->verifyEmailHelper->validateEmailConfirmationFromRequest($request, $usuario->getId(), $usuario->getEmail());
-
             $usuario->setIsVerified(true);
             $entityManager->persist($usuario);
             $entityManager->flush();
-
             $this->addFlash('success', 'Tu correo electrónico ha sido verificado.');
         } catch (VerifyEmailExceptionInterface $exception) {
             $this->addFlash('verify_email_error', $exception->getReason());
             return $this->redirectToRoute('app_registro');
-        }
-        return $this->redirectToRoute('app_home');
+        }return $this->redirectToRoute('app_home');
     }
 }

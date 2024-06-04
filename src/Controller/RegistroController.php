@@ -34,7 +34,6 @@ class RegistroController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $existingUser = $entityManager->getRepository(Usuario::class)->findOneBy(['email' => $usuario->getEmail()]);
-
             if ($existingUser) {
                 $this->addFlash('danger', 'El correo electrónico ya está en uso.');
                 return $this->redirectToRoute('app_registro');
@@ -43,15 +42,14 @@ class RegistroController extends AbstractController
                 $usuario,
                 $form->get('contrasenia')->getData()
             ));
-
             $entityManager->persist($usuario);
             $entityManager->flush();
             $signatureComponents = $this->verifyEmailHelper->generateSignature(
                 'app_verify_email',
                 $usuario->getId(),
-                $usuario->getEmail()
+                $usuario->getEmail(),
+                ['id' => $usuario->getId()]
             );
-
             $email = (new TemplatedEmail())
                 ->from(new Address('k3vin.m.ramirez@gmail.com'))
                 ->to(new Address($usuario->getEmail()))
@@ -61,9 +59,7 @@ class RegistroController extends AbstractController
                     'signedUrl' => $signatureComponents->getSignedUrl(),
                     'usuario' => $usuario,
                 ]);
-
             try {
-                // Envío del correo electrónico
                 $this->mailer->send($email);
             } catch (\Exception $e) {
                 $this->addFlash('error', 'Error al enviar el correo electrónico: ' . $e->getMessage());
