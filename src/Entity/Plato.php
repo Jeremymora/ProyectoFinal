@@ -25,7 +25,7 @@ class Plato
     #[ORM\Column(type:"integer")]
     private $kcal;
 
-    #[ORM\Column(type:"boolean")]
+    #[ORM\Column(type:"boolean", options: ["default" => 1])]
     private $disponibilidad;
     #[ORM\OneToMany(targetEntity:"App\Entity\DetallesPedido", mappedBy:"plato")]
     #[ORM\Column(type: 'string', length: 255)]

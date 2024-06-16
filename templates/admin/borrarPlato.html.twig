@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lista de Platos{% endblock %}
+
+{% block content %}
+<h1>Lista de Platos</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for plato in platos %}
+            <tr>
+                <td>{{ plato.nombreDelPlato }}</td>
+                <td>{{ plato.precio }} €</td>
+                <td>
+                    <form action="{{ path('admin_plato_delete', {'id': plato.id}) }}" method="post" onsubmit="return confirm('¿Seguro que quieres eliminar este plato?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ plato.id) }}">
+                        <button class="btn btn-danger">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ path('admin_plato_new') }}" class="btn btn-primary">Crear Nuevo Plato</a>
+{% endblock %}

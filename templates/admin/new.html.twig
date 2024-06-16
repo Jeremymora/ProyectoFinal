@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nuevo Plato{% endblock %}
+
+{% block content %}
+<h1>Nuevo Plato</h1>
+
+  {{ form_start(form) }}
+        {{ form_row(form.nombreDelPlato) }}
+        {{ form_row(form.peso) }}
+        {{ form_row(form.precio) }}
+        {{ form_row(form.kcal) }}
+        {{ form_row(form.imageFile) }}
+        <button class="btn btn-success">Guardar</button>
+    {{ form_end(form) }}
+    <a href="{{ path('admin_plato_list') }}">Volver a la lista</a>
+{% endblock %}
