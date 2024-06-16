@@ -104,16 +104,24 @@ function showCartNotification(nombreDelPlato) {
 }
 function confirmarPedido() {
     fetch('/confirmar-pedido', {
-        method: 'POST'
+        method: 'POST',
     })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => { throw new Error(text) });
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 alert('Pedido confirmado. Revisa tu correo electrónico para más detalles.');
                 window.location.href = '/carrito';
             } else {
-                alert('Hubo un problema al confirmar tu pedido.');
+                alert(data.error || 'Hubo un problema al confirmar tu pedido.');
             }
         })
-        .catch(error => console.error('Error al confirmar el pedido:', error));
+        .catch(error => {
+            console.error('Error al confirmar el pedido:', error);
+            alert('Error al confirmar el pedido: ' + error.message);
+        });
 }

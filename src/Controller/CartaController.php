@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class CartaController extends AbstractController
 {
     #[Route('/carta', name: 'carta_list')]
-    public function index(EntityManagerInterface $em)
+    public function index()
     {
         return $this->render('Products.html.twig');
     }

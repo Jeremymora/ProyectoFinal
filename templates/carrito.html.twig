@@ -9,6 +9,7 @@
             <p>{{ item.plato.nombreDelPlato }} - {{ item.cantidad }} x {{ item.plato.precio }}€</p>
         </div>
     {% endfor %}
+    <p>Total: {{ total }}€</p>
 <button class="btn btn-success" onclick="confirmarPedido()">Confirmar Pedido</button>
 </div>    
 {% endblock %}

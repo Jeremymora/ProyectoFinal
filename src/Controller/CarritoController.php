@@ -26,7 +26,6 @@ class CarritoController extends AbstractController
     public function addToCart(
         Request $request,
         EntityManagerInterface $entityManager,
-        PlatoRepository $platoRepository,
         PedidosRepository $pedidoRepository,
         UserInterface $usuario
     ): Response {
@@ -36,7 +35,6 @@ class CarritoController extends AbstractController
         }
 
         $platoId = $request->request->get('platoId');
-        dump($platoId);
         if (!$platoId) {
             return new Response('ID de plato no válido', Response::HTTP_BAD_REQUEST);
         }
@@ -56,16 +54,20 @@ class CarritoController extends AbstractController
             $entityManager->persist($pedido);
             $entityManager->flush();
         }
-
-        $carrito = new Carrito();
-        $carrito->setPlato($plato);
-        $carrito->setCantidad($cantidad);
-        $carrito->setPrecioTotal($plato->getPrecio() * $cantidad);
-        $carrito->setUsuario($usuario);
-        $carrito->setPedido($pedido);
-        $entityManager->persist($carrito);
+        $carrito = $entityManager->getRepository(Carrito::class)->findOneBy(['pedido' => $pedido, 'plato' => $plato]);
+        if ($carrito) {
+            $carrito->setCantidad($carrito->getCantidad() + $cantidad);
+            $carrito->setPrecioTotal($carrito->getCantidad() * $plato->getPrecio());
+        } else {
+            $carrito = new Carrito();
+            $carrito->setPlato($plato);
+            $carrito->setCantidad($cantidad);
+            $carrito->setPrecioTotal($plato->getPrecio() * $cantidad);
+            $carrito->setUsuario($usuario);
+            $carrito->setPedido($pedido);
+            $entityManager->persist($carrito);
+        }
         $entityManager->flush();
-
         return new Response(json_encode(['success' => true]), Response::HTTP_OK, ['Content-Type' => 'application/json']);
     }
 
@@ -78,9 +80,13 @@ class CarritoController extends AbstractController
         }
 
         $carritoItems = $entityManager->getRepository(Carrito::class)->findBy(['usuario' => $user]);
-
+        $total = 0;
+        foreach ($carritoItems as $item) {
+            $total += $item->getPlato()->getPrecio() * $item->getCantidad();
+        }
         return $this->render('carrito.html.twig', [
             'carritoItems' => $carritoItems,
+            'total' => $total,
         ]);
     }
 
@@ -89,36 +95,56 @@ class CarritoController extends AbstractController
         PedidosRepository $pedidoRepository,
         EntityManagerInterface $entityManager,
         MailerInterface $mailer,
-        UserInterface $user
+        UserInterface $user,
+        Request $request
     ): Response {
         $user = $this->getUser();
         if (!$user) {
-            return new Response('Unauthorized', Response::HTTP_UNAUTHORIZED);
+            return new Response(json_encode(['error' => 'Unauthorized']), Response::HTTP_UNAUTHORIZED, ['Content-Type' => 'application/json']);
         }
 
         $pedido = $pedidoRepository->findOneBy(['usuario' => $user, 'status' => 'pending']);
 
         if (!$pedido) {
-            return new Response('No hay pedido pendiente', Response::HTTP_BAD_REQUEST);
+            return new Response(json_encode(['error' => 'No hay pedido pendiente']), Response::HTTP_BAD_REQUEST, ['Content-Type' => 'application/json']);
         }
 
         $pedido->setStatus('completed');
+        $totalPrecio = 0;
+        foreach ($pedido->getCarritos() as $detalle) {
+            $totalPrecio += $detalle->getPrecioTotal();
+        }
+        $pedido->setTotalPrecio($totalPrecio);
         $entityManager->flush();
 
-        $detalles = '';
-        foreach ($pedido->getDetallesPedidos() as $detalle) {
-            $detalles .= $detalle->getPlato()->getNombreDelPlato() . ' - ' . $detalle->getCantidad() . ' x ' . $detalle->getPlato()->getPrecio() . "\n";
+        $detalles = [];
+        foreach ($pedido->getCarritos() as $detalle) {
+            $detalles[] = [
+                'plato' => $detalle->getPlato(),
+                'cantidad' => $detalle->getCantidad(),
+            ];
+            $entityManager->remove($detalle);
         }
+        $entityManager->flush();
 
         $email = (new TemplatedEmail())
             ->from('k3vin.m.ramirez@gmail.com')
             ->to($user->getUserIdentifier())
             ->subject('Detalles del Pedido')
             ->htmlTemplate('detalles_pedido.html.twig')
-            ->context(['usuario' => $user,'detalles' => $detalles, 'totalPrecio' => $pedido->getTotalPrecio()]);
+            ->context([
+            'usuario' => $user,
+            'pedido' => $pedido,
+            'detalles' => $detalles,
+            'totalPrecio' => $pedido->getTotalPrecio()]);
 
-        $mailer->send($email);
-
+        try {
+            $mailer->send($email);
+        } catch (\Exception $e) {
+            return new Response(json_encode(['error' => 'Error al enviar el correo: ' . $e->getMessage()]), Response::HTTP_INTERNAL_SERVER_ERROR, ['Content-Type' => 'application/json']);
+        }
+        $session = $request->getSession();
+        $session->remove('cart');
         return new Response(json_encode(['success' => true, 'message' => 'Pedido confirmado y correo enviado']), Response::HTTP_OK, ['Content-Type' => 'application/json']);
     }
 }
