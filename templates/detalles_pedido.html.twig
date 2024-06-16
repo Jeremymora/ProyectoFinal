@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Detalles del Pedido</title>
+    <style>
+        /* Bootstrap CSS (inlined for email compatibility) */
+        .container {
+            width: 100%;
+            margin-right: auto;
+            margin-left: auto;
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -15px;
+            margin-left: -15px;
+        }
+        .col {
+            position: relative;
+            width: 100%;
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #212529;
+        }
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+        }
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #dee2e6;
+        }
+        .table tbody + tbody {
+            border-top: 2px solid #dee2e6;
+        }
+        .table .table {
+            background-color: #fff;
+        }
+        .table-bordered {
+            border: 1px solid #dee2e6;
+        }
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #dee2e6;
+        }
+        .table-bordered thead th,
+        .table-bordered thead td {
+            border-bottom-width: 2px;
+        }
+        .text-center {
+            text-align: center !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1 class="text-center">Detalles del Pedido</h1>
+                <p>Hola {{ usuario.getNombreDeUsuario() }},</p>
+                <p>Gracias por tu pedido. Aquí están los detalles:</p>
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Plato</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unitario</th>
+                            <th>Precio Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for detalle in detalles %}
+                            <tr>
+                                <td>{{ detalle.plato.getNombreDelPlato() }}</td>
+                                <td>{{ detalle.cantidad }}</td>
+                                <td>{{ detalle.plato.getPrecio() | number_format(2, '.', ',') }} &euro;</td>
+                                <td>{{ (detalle.plato.getPrecio() * detalle.cantidad) | number_format(2, '.', ',') }} &euro;</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <p><strong>Total a pagar:</strong> {{ totalPrecio | number_format(2, '.', ',') }} &euro;</p>
+
+                <p>Esperamos que disfrutes tu comida.</p>
+                <p>Fecha del Pedido: {{ pedido.fechaDelPedido|date('d-m-Y H:i') }}</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

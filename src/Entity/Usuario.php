@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\UsuarioRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
@@ -18,13 +20,13 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type:'string', length: 255)]
     private ?string $nombreDeUsuario;
 
-    #[ORM\Column(type:'string', length: 255)]
-    private ?string $email;
+    #[ORM\Column(type:'string', length: 255, unique: true)]
+    private $email;
 
     #[ORM\Column(type:'string', length: 255)]
     private ?string $contrasenia;
 
-    #[ORM\OneToMany(targetEntity:"App\Entity\Pedidos", mappedBy:"usuario")]
+    #[ORM\OneToMany(targetEntity:"App\Entity\Pedidos", mappedBy:"usuario", cascade: ['persist', 'remove'])]
 
     private $pedidos;
 
@@ -38,6 +40,10 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type:'boolean')]
     private $isVerified = false;
 
+    public function __construct()
+    {
+        $this->pedidos = new ArrayCollection();
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -108,5 +114,31 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     public function IsVerified(): ?bool
     {
         return $this->isVerified;
+    }
+    public function getPedidos(): Collection
+    {
+        return $this->pedidos;
+    }
+
+    public function addPedido(Pedidos $pedido): self
+    {
+        if (!$this->pedidos->contains($pedido)) {
+            $this->pedidos[] = $pedido;
+            $pedido->setUsuario($this);
+        }
+
+        return $this;
+    }
+    public function removePedido(Pedidos $pedido): self
+    {
+        if ($this->pedidos->contains($pedido)) {
+            $this->pedidos->removeElement($pedido);
+            // set the owning side to null (unless already changed)
+            if ($pedido->getUsuario() === $this) {
+                $pedido->setUsuario(null);
+            }
+        }
+
+        return $this;
     }
 }

@@ -19,11 +19,11 @@ class DetallesPedido
     #[ORM\Column(type:"decimal", precision:10, scale:2)]
     private $precioTotal;
 
-    #[ORM\ManyToOne(targetEntity:"App\Entity\Pedidos", inversedBy:"detallesPedidos")]
+    #[ORM\ManyToOne(targetEntity:Pedidos::class, inversedBy:"detallesPedidos")]
     #[ORM\JoinColumn(nullable:false)]
     private $pedido;
 
-    #[ORM\ManyToOne(targetEntity:"App\Entity\Plato", inversedBy:"detallesPedidos")]
+    #[ORM\ManyToOne(targetEntity: Plato::class, inversedBy: 'detallesPedidos')]
     #[ORM\JoinColumn(nullable:false)]
     private $plato;
 

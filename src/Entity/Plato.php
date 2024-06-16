@@ -4,9 +4,9 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Repository\PlatoRepository;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: "App\Repository\PlatoRepository")]
 class Plato
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column(type:'integer')]
@@ -30,12 +30,14 @@ class Plato
     #[ORM\OneToMany(targetEntity:"App\Entity\DetallesPedido", mappedBy:"plato")]
     #[ORM\Column(type: 'string', length: 255)]
     private $image;
+    #[ORM\OneToMany(targetEntity: DetallesPedido::class, mappedBy: 'plato')]
     private $detallesPedidos;
 
     #[ORM\OneToMany(targetEntity:"App\Entity\Carrito", mappedBy:"plato")]
     private $carritos;
     public function __construct()
     {
+        $this->detallesPedidos = new ArrayCollection();
         $this->carritos = new ArrayCollection();
     }
     public function getId()

@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const button = document.createElement("button");
                 button.className = "btn btn-primary";
                 button.textContent = "Agregar al carrito";
-                button.onclick = () => addToCart(product.id, product.nombreDelPlato);
+                button.onclick = () => addToCart(product.id);
                 cardBody.appendChild(button);
 
                 row.appendChild(productDiv);
@@ -85,7 +85,9 @@ function addToCart(platoId) {
         })
         .then(data => {
             if (data.success) {
+                console.log('Respuesta del servidor:', data);
                 showCartNotification(nombreDelPlato);
+                console.log(platoId)
             }
         })
         .catch(error => console.error('Error al agregar al carrito:', error));

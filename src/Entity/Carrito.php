@@ -3,21 +3,18 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\CarritoRepository;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: CarritoRepository::class)]
 class Carrito
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type:"integer")]
     private $id;
-
-    #[ORM\Column(type:"integer")]
-    private $idPedido;
-
-    #[ORM\Column(type:"integer")]
-    private $idPlato;
-
+    #[ORM\ManyToOne(targetEntity: Pedidos::class, inversedBy: 'carritos')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $pedido;
     #[ORM\Column(type:"integer")]
     private $cantidad;
 
@@ -28,33 +25,20 @@ class Carrito
     private $usuario;
     #[ORM\ManyToOne(targetEntity:"App\Entity\Plato", inversedBy:"carritos")]
     #[ORM\JoinColumn(nullable:false)]
-
     private $plato;
 
     public function getId(): ?int
     {
         return $this->id;
     }
-    public function getIdPedido(): ?int
+    public function getPedido(): ?Pedidos
     {
-        return $this->idPedido;
+        return $this->pedido;
     }
 
-    public function setIdPedido(int $idPedido): self
+    public function setPedido(?Pedidos $pedido): self
     {
-        $this->idPedido = $idPedido;
-
-        return $this;
-    }
-    public function getIdPlato(): ?int
-    {
-        return $this->idPlato;
-    }
-
-    public function setIdPlato(int $idPlato): self
-    {
-        $this->idPlato = $idPlato;
-
+        $this->pedido = $pedido;
         return $this;
     }
     public function getCantidad(): ?int
