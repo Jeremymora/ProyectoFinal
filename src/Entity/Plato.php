@@ -3,13 +3,13 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity]
 class Plato
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type:'integer')]
+    #[ORM\Id, ORM\GeneratedValue, ORM\Column(type:'integer')]
     private $id;
 
     #[ORM\Column(type:"string", length:255)]
@@ -28,11 +28,16 @@ class Plato
     #[ORM\Column(type:"boolean")]
     private $disponibilidad;
     #[ORM\OneToMany(targetEntity:"App\Entity\DetallesPedido", mappedBy:"plato")]
+    #[ORM\Column(type: 'string', length: 255)]
+    private $image;
     private $detallesPedidos;
 
     #[ORM\OneToMany(targetEntity:"App\Entity\Carrito", mappedBy:"plato")]
     private $carritos;
-
+    public function __construct()
+    {
+        $this->carritos = new ArrayCollection();
+    }
     public function getId()
     {
         return $this->id;
@@ -84,6 +89,16 @@ class Plato
     public function setDisponibilidad($disponibilidad)
     {
         $this->disponibilidad = $disponibilidad;
+
+        return $this;
+    }
+    public function getImage()
+    {
+        return $this->image;
+    }
+    public function setImage($image)
+    {
+        $this->image = $image;
 
         return $this;
     }

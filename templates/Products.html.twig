@@ -1,9 +1,12 @@
 {% extends 'base.html.twig' %}
-{% block title %}Lista de Productos
-{% endblock %}
+
+{% block title %}Carta de Platos{% endblock %}
+
 {% block content %}
 
-	<div id="product-list" class="product-grid"></div>
+<div id="product-list" class="container"><h1 class="mb-4">Comidas <span class="badge bg-secondary">8</span></h1>
+                <p class="mb-4">Elige entre nuestra variedad semanal de platos. Cambiamos el menú cada lunes, así que si te gusta algo, pídelo antes de que acabe el domingo.</p>
+                <h2 class="mb-3">Platos principales</h2></div>
 
-	<script src="{{ asset('js/products.js') }}"></script>
+<script src="{{ asset('js/products.js') }}"></script>
 {% endblock %}

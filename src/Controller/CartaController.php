@@ -4,24 +4,36 @@
 
 namespace App\Controller;
 
+use App\Entity\Plato;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CartaController extends AbstractController
 {
     #[Route('/carta', name: 'carta_list')]
-    public function index(): Response
+    public function index(EntityManagerInterface $em)
     {
-        return $this->render('/Products.html.twig');
+        return $this->render('Products.html.twig');
     }
-
-    #[Route('products.json', name: 'carta_json')]
-    public function getProducts(): JsonResponse
+    #[Route('/api/platos', name: 'api_platos', methods: ['GET'])]
+    public function getPlatos(EntityManagerInterface $em): JsonResponse
     {
-        $jsonPath = $this->getParameter('kernel.project_dir') . '/public/json/products.json';
-        $data = json_decode(file_get_contents($jsonPath), true);
+        $platos = $em->getRepository(Plato::class)->findAll();
+        $data = [];
+
+        foreach ($platos as $plato) {
+            $data[] = [
+                'id' => $plato->getId(),
+                'nombreDelPlato' => $plato->getNombreDelPlato(),
+                'peso' => $plato->getPeso(),
+                'precio' => $plato->getPrecio(),
+                'kcal' => $plato->getKcal(),
+                'disponibilidad' => $plato->getDisponibilidad(),
+                'image' => $plato->getImage(),
+            ];
+        }
 
         return new JsonResponse($data);
     }

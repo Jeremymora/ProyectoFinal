@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Carrito{% endblock %}
+{% block content %}
+    <h1>Tu Carrito</h1>
+    <ul>
+        {% for item in carritoItems %}
+            <li>{{ item.getPlato().getNombreDelPlato() }} - Cantidad: {{ item.getCantidad() }} - Precio: {{ item.getPrecioTotal() }} €</li>
+        {% endfor %}
+    </ul>
+
+    <button class="btn btn-success" onclick="confirmarPedido()">Confirmar Pedido</button>
+{% endblock %}

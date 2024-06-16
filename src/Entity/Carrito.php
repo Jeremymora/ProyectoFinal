@@ -79,4 +79,26 @@ class Carrito
 
         return $this;
     }
+    public function getUsuario(): ?Usuario
+    {
+        return $this->usuario;
+    }
+
+    public function setUsuario(?Usuario $usuario): self
+    {
+        $this->usuario = $usuario;
+
+        return $this;
+    }
+    public function getPlato(): ?Plato
+    {
+        return $this->plato;
+    }
+
+    public function setPlato(?Plato $plato): self
+    {
+        $this->plato = $plato;
+
+        return $this;
+    }
 }

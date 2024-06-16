@@ -80,7 +80,6 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     }
     public function getRoles(): array
     {
-        // Devuelve los roles que tiene este usuario. Por ahora, solo devolveremos 'ROLE_USER'.
         return ['ROLE_USER'];
     }
     public function eraseCredentials(): void
