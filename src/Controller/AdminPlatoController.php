@@ -37,9 +37,9 @@ class AdminPlatoController extends AbstractController
                     $this->addFlash('error', 'Error al insertar imagen: ' . $e->getMessage());
                 }
 
-                $plato->setImage($newFilename);
+                $plato->setImage('\images\\'.$newFilename);
             }
-
+            $plato->setDisponibilidad(1);
             $entityManager->persist($plato);
             $entityManager->flush();
 

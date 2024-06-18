@@ -9,7 +9,6 @@ use App\Entity\DetallesPedido;
 use App\Entity\Pedidos;
 use App\Entity\Plato;
 use App\Repository\PedidosRepository;
-use App\Repository\PlatoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +17,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\Mime\Address;
 
 class CarritoController extends AbstractController
 {
@@ -33,7 +31,6 @@ class CarritoController extends AbstractController
         if (!$user) {
             return new Response('Unauthorized', Response::HTTP_UNAUTHORIZED);
         }
-
         $platoId = $request->request->get('platoId');
         if (!$platoId) {
             return new Response('ID de plato no válido', Response::HTTP_BAD_REQUEST);
@@ -44,7 +41,6 @@ class CarritoController extends AbstractController
         if (!$plato) {
             return new Response('Plato no encontrado', Response::HTTP_NOT_FOUND);
         }
-
         $pedido = $pedidoRepository->findOneBy(['usuario' => $usuario, 'status' => 'pending']);
         if (!$pedido) {
             $pedido = new Pedidos();
@@ -78,7 +74,6 @@ class CarritoController extends AbstractController
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
-
         $carritoItems = $entityManager->getRepository(Carrito::class)->findBy(['usuario' => $user]);
         $total = 0;
         foreach ($carritoItems as $item) {
